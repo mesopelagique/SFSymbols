@@ -1,6 +1,8 @@
 # SFSymbols
 
 [![build](https://github.com/mesopelagique/SFSymbols/actions/workflows/build.yml/badge.svg)](https://github.com/mesopelagique/SFSymbols/actions/workflows/build.yml)
+[![release](https://github.com/mesopelagique/SFSymbols/actions/workflows/release.yml/badge.svg)](https://github.com/mesopelagique/SFSymbols/actions/workflows/release.yml)
+[![release](https://img.shields.io/github/v/release/mesopelagique/SFSymbols.svg)](https://github.com/mesopelagique/SFSymbols/releases/latest)
 
 ⚠️ Only available on macOS Bigsur
 
