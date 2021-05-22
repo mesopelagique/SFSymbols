@@ -1,5 +1,7 @@
 # SFSymbols
 
+[![build](https://github.com/mesopelagique/SFSymbols/actions/workflows/build.yml/badge.svg)](https://github.com/mesopelagique/SFSymbols/actions/workflows/build.yml)
+
 ⚠️ Only available on macOS Bigsur
 
 Use on macOS [SF Symbols](https://developer.apple.com/sf-symbols/)
