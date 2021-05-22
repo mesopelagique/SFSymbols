@@ -1,0 +1,149 @@
+{
+	"destination": "detailScreen",
+	"rightMargin": 19,
+	"bottomMargin": 20,
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onValidate",
+		"onClick",
+		"onOutsideCall",
+		"onDoubleClick",
+		"onDrop",
+		"onMenuSelect",
+		"onPluginArea",
+		"onDataChange",
+		"onDragOver",
+		"onTimer",
+		"onAfterKeystroke",
+		"onAfterEdit",
+		"onBeginDragOver",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "841pt",
+		"paperHeight": "595pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"Variable": {
+					"type": "input",
+					"top": 65,
+					"left": 123,
+					"width": 102,
+					"height": 65,
+					"dataSource": "Form:C1466.picture",
+					"dataSourceTypeHint": "picture",
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"contextMenu": "none",
+					"pictureFormat": "truncatedCenter",
+					"dragging": "custom",
+					"method": "",
+					"events": [
+						"onLoad",
+						"onDataChange"
+					]
+				},
+				"Text": {
+					"type": "text",
+					"top": 31,
+					"left": 24,
+					"width": 146,
+					"height": 22,
+					"fontFamily": "Al Bayan Bold",
+					"fontSize": 13,
+					"text": "Using text:      􀣳"
+				},
+				"Text1": {
+					"type": "text",
+					"top": 57,
+					"left": 24,
+					"width": 85,
+					"height": 22,
+					"fontFamily": "Al Bayan Bold",
+					"fontSize": 13,
+					"text": "Using plugin:"
+				},
+				"Variable1": {
+					"type": "input",
+					"top": 136,
+					"left": 123,
+					"width": 124,
+					"height": 129,
+					"dataSource": "Form:C1466.pictureSize",
+					"dataSourceTypeHint": "picture",
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"contextMenu": "none",
+					"pictureFormat": "truncatedCenter",
+					"dragging": "custom",
+					"method": "",
+					"events": [
+						"onLoad",
+						"onDataChange"
+					]
+				},
+				"Variable2": {
+					"type": "input",
+					"top": 261,
+					"left": 123,
+					"width": 124,
+					"height": 129,
+					"dataSource": "Form:C1466.pictureScale",
+					"dataSourceTypeHint": "picture",
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"contextMenu": "none",
+					"pictureFormat": "truncatedCenter",
+					"dragging": "custom",
+					"method": "",
+					"events": [
+						"onLoad",
+						"onDataChange"
+					]
+				},
+				"Variable3": {
+					"type": "input",
+					"top": 391,
+					"left": 123,
+					"width": 124,
+					"height": 129,
+					"dataSource": "Form:C1466.pictureStyle",
+					"dataSourceTypeHint": "picture",
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"contextMenu": "none",
+					"pictureFormat": "truncatedCenter",
+					"dragging": "custom",
+					"method": "",
+					"events": [
+						"onLoad",
+						"onDataChange"
+					]
+				}
+			}
+		}
+	],
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"geometryStamp": 2
+}

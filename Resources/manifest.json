@@ -1,0 +1,1 @@
+{	"name": "SFSymbols",	"id": 15000,	"commands": [		{			"theme": "Photos",			"syntax": "SFSymbolPicture(&T;&J):P",			"threadSafe": true		}	]}

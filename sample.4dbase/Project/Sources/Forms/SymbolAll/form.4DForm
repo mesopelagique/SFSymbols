@@ -1,0 +1,98 @@
+{
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"windowSizingX": "fixed",
+	"windowSizingY": "fixed",
+	"windowMinWidth": 0,
+	"windowMinHeight": 0,
+	"windowMaxWidth": 32767,
+	"windowMaxHeight": 32767,
+	"rightMargin": 20,
+	"bottomMargin": 20,
+	"events": [
+		"onLoad",
+		"onPageChange",
+		"onValidate",
+		"onClick",
+		"onDoubleClick",
+		"onOutsideCall",
+		"onBeginDragOver",
+		"onDragOver",
+		"onDrop",
+		"onAfterKeystroke",
+		"onMenuSelect",
+		"onPluginArea",
+		"onAfterEdit",
+		"onTimer",
+		"onBoundVariableChange"
+	],
+	"windowTitle": "SF Symbols",
+	"destination": "detailScreen",
+	"pages": [
+		{
+			"objects": {}
+		},
+		{
+			"objects": {
+				"List Box": {
+					"type": "listbox",
+					"left": 23,
+					"top": 15,
+					"width": 453,
+					"height": 405,
+					"events": [
+						"onClick",
+						"onHeaderClick",
+						"onDataChange",
+						"onSelectionChange"
+					],
+					"listboxType": "collection",
+					"dataSource": "Form:C1466.symbols",
+					"rowHeight": "80px",
+					"columns": [
+						{
+							"header": {
+								"text": "Name",
+								"name": "Name",
+								"dataSource": ""
+							},
+							"name": "Column1",
+							"footer": {
+								"name": "Footer1"
+							},
+							"width": 308,
+							"dataSource": "This:C1470.name",
+							"textAlign": "center",
+							"verticalAlign": "middle"
+						},
+						{
+							"header": {
+								"name": "Picture",
+								"text": "Picture"
+							},
+							"name": "Column2",
+							"footer": {
+								"name": "Footer2"
+							},
+							"dataSourceTypeHint": "picture",
+							"dataSource": "This:C1470.picture",
+							"rowHeightAuto": false,
+							"pictureFormat": "truncatedCenter"
+						}
+					]
+				}
+			}
+		}
+	],
+	"geometryStamp": 8,
+	"method": "method.4dm",
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {}
+		}
+	}
+}
