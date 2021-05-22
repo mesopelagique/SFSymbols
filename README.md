@@ -24,8 +24,10 @@ $picture:=SFSymbolPicture("lasso.sparkles"; New object("width"; 64; "height"; 64
 
 ## Get a list of available icons
 
-Download the recommanded app from [apple site](https://developer.apple.com/sf-symbols/) or you could look at the [demo app resources](https://github.com/mesopelagique/SFSymbols/blob/main/sample.4dbase/Resources/list.txt)
+Download the recommended app from [apple site](https://developer.apple.com/sf-symbols/) or you could look at the [demo app resources](https://github.com/mesopelagique/SFSymbols/blob/main/sample.4dbase/Resources/list.txt)
 
 ## Install
 
-Compile the projet and put `SFSymbols.bundle` into your [Plugins folder](sample.4dbase/Plugins/) until an offical release is available in github release.
+Compile the projet and put `SFSymbols.bundle` into your database or app [Plugins folder](sample.4dbase/Plugins/).
+
+You could also download [the latest release](https://github.com/mesopelagique/SFSymbols/releases/latest/download/SFSymbols.bundle.zip) but it is maybe not well signed or compiled for apple M1
