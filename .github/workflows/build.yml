@@ -19,4 +19,4 @@ jobs:
           xcodebuild | xcpretty
       - name: List bundle files
         run: |
-          find ls build/Default 
+          find build/Default 
