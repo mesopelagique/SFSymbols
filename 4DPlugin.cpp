@@ -80,8 +80,9 @@ void SFSymbolPicture( PA_PluginParameters params )
         if (ob_is_defined(options, L"pointSize")  && ob_is_defined(options, L"weight") && ob_is_defined(options, L"scale")) {
             CGFloat pointSize = ob_get_n(options, L"pointSize");
             CGFloat weight = ob_get_n(options, L"weight");
-            CGFloat scale = ob_get_n(options, L"scale");
-            conf = [NSImageSymbolConfiguration configurationWithPointSize: pointSize weight: weight scale:scale];
+            CGFloat scaleFloat = ob_get_n(options, L"scale");
+            NSImageSymbolScale scale = NSImageSymbolScale(scaleFloat);
+            conf = [NSImageSymbolConfiguration configurationWithPointSize: pointSize weight: weight scale: scale];
         } else if (ob_is_defined(options, L"pointSize")  && ob_is_defined(options, L"weight")) {
             CGFloat pointSize = ob_get_n(options, L"pointSize");
             CGFloat weight = ob_get_n(options, L"weight");
@@ -90,15 +91,17 @@ void SFSymbolPicture( PA_PluginParameters params )
             CUTF8String styleUTF;
             ob_get_s(options, L"style", &styleUTF);
             NSString *style = [NSString stringWithUTF8String:(const char *)styleUTF.c_str()];
-            CGFloat scale = ob_get_n(options, L"scale");
-            conf = [NSImageSymbolConfiguration configurationWithTextStyle:style scale:scale];
+            CGFloat scaleFloat = ob_get_n(options, L"scale");
+            NSImageSymbolScale scale = NSImageSymbolScale(scaleFloat);
+            conf = [NSImageSymbolConfiguration configurationWithTextStyle:style scale: scale];
         } else if (ob_is_defined(options, L"style")) {
             CUTF8String styleUTF;
             ob_get_s(options, L"style", &styleUTF);
             NSString *style = [NSString stringWithUTF8String:(const char *)styleUTF.c_str()];
             conf = [NSImageSymbolConfiguration configurationWithTextStyle: style];
         } else if (ob_is_defined(options, L"scale")) {
-            CGFloat scale = ob_get_n(options, L"scale");
+            CGFloat scaleFloat = ob_get_n(options, L"scale");
+            NSImageSymbolScale scale = NSImageSymbolScale(scaleFloat);
             if (scale>0) {
                 conf = [NSImageSymbolConfiguration configurationWithScale: scale];
             }
