@@ -137,6 +137,184 @@
 						"onLoad",
 						"onDataChange"
 					]
+				},
+				"TextNew": {
+					"type": "text",
+					"top": 31,
+					"left": 320,
+					"width": 260,
+					"height": 22,
+					"fontFamily": "Al Bayan Bold",
+					"fontSize": 13,
+					"text": "New rendering options (since Big Sur):"
+				},
+				"TextHierarchical": {
+					"type": "text",
+					"top": 75,
+					"left": 320,
+					"width": 150,
+					"height": 22,
+					"fontSize": 12,
+					"text": "hierarchicalColor (12+)"
+				},
+				"PictureHierarchical": {
+					"type": "input",
+					"top": 65,
+					"left": 490,
+					"width": 64,
+					"height": 64,
+					"dataSource": "Form:C1466.pictureHierarchical",
+					"dataSourceTypeHint": "picture",
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"contextMenu": "none",
+					"pictureFormat": "scaled",
+					"events": [
+						"onLoad",
+						"onDataChange"
+					]
+				},
+				"TextPalette": {
+					"type": "text",
+					"top": 165,
+					"left": 320,
+					"width": 150,
+					"height": 22,
+					"fontSize": 12,
+					"text": "paletteColors (12+)"
+				},
+				"PicturePalette": {
+					"type": "input",
+					"top": 155,
+					"left": 490,
+					"width": 64,
+					"height": 64,
+					"dataSource": "Form:C1466.picturePalette",
+					"dataSourceTypeHint": "picture",
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"contextMenu": "none",
+					"pictureFormat": "scaled",
+					"events": [
+						"onLoad",
+						"onDataChange"
+					]
+				},
+				"TextMulticolor": {
+					"type": "text",
+					"top": 255,
+					"left": 320,
+					"width": 150,
+					"height": 22,
+					"fontSize": 12,
+					"text": "multicolor (12+)"
+				},
+				"PictureMulticolor": {
+					"type": "input",
+					"top": 245,
+					"left": 490,
+					"width": 64,
+					"height": 64,
+					"dataSource": "Form:C1466.pictureMulticolor",
+					"dataSourceTypeHint": "picture",
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"contextMenu": "none",
+					"pictureFormat": "scaled",
+					"events": [
+						"onLoad",
+						"onDataChange"
+					]
+				},
+				"TextMonochrome": {
+					"type": "text",
+					"top": 345,
+					"left": 320,
+					"width": 150,
+					"height": 22,
+					"fontSize": 12,
+					"text": "monochrome (13+)"
+				},
+				"PictureMonochrome": {
+					"type": "input",
+					"top": 335,
+					"left": 490,
+					"width": 64,
+					"height": 64,
+					"dataSource": "Form:C1466.pictureMonochrome",
+					"dataSourceTypeHint": "picture",
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"contextMenu": "none",
+					"pictureFormat": "scaled",
+					"events": [
+						"onLoad",
+						"onDataChange"
+					]
+				},
+				"TextVariable": {
+					"type": "text",
+					"top": 435,
+					"left": 320,
+					"width": 150,
+					"height": 22,
+					"fontSize": 12,
+					"text": "variableValue (13+)"
+				},
+				"PictureVariable": {
+					"type": "input",
+					"top": 425,
+					"left": 490,
+					"width": 64,
+					"height": 64,
+					"dataSource": "Form:C1466.pictureVariable",
+					"dataSourceTypeHint": "picture",
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"contextMenu": "none",
+					"pictureFormat": "scaled",
+					"events": [
+						"onLoad",
+						"onDataChange"
+					]
+				},
+				"TextColor": {
+					"type": "text",
+					"top": 515,
+					"left": 320,
+					"width": 150,
+					"height": 22,
+					"fontSize": 12,
+					"text": "color (11+)"
+				},
+				"PictureColor": {
+					"type": "input",
+					"top": 505,
+					"left": 490,
+					"width": 64,
+					"height": 64,
+					"dataSource": "Form:C1466.pictureColor",
+					"dataSourceTypeHint": "picture",
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"contextMenu": "none",
+					"pictureFormat": "scaled",
+					"events": [
+						"onLoad",
+						"onDataChange"
+					]
 				}
 			}
 		}
@@ -145,5 +323,12 @@
 		"version": "1",
 		"kind": "form"
 	},
-	"geometryStamp": 2
+	"geometryStamp": 2,
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {}
+		}
+	}
 }

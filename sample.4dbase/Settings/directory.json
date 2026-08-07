@@ -21,8 +21,6 @@
 	"settings": {
 		"localGenericWebUser": "Designer",
 		"designAccessGroup": "*",
-		"localMobileAccessGroupRW": "*",
-		"remoteMobileAccessGroupRW": "*",
 		"remoteGenericWebUser": "Designer",
 		"remoteDefaultUser": ""
 	}

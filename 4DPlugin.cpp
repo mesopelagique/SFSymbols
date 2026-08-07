@@ -53,6 +53,115 @@ void convertToUTF8(const CUTF16String* fromString, CUTF8String* toString)
     }
 }
 
+#if __APPLE__
+// Parse a CSS-like hex color string into an NSColor (sRGB).
+// Accepts "#RGB", "#RGBA", "#RRGGBB", "#RRGGBBAA" (the leading '#' is optional).
+// Returns nil when the string cannot be parsed.
+static NSColor* colorFromHexString(NSString *hex)
+{
+    if (hex == nil) {
+        return nil;
+    }
+    NSString *s = [[hex stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];
+    if ([s hasPrefix:@"#"]) {
+        s = [s substringFromIndex:1];
+    }
+
+    NSUInteger n = [s length];
+    // Expand shorthand #RGB / #RGBA to the full 2-digits-per-channel form.
+    if (n == 3 || n == 4) {
+        NSMutableString *expanded = [NSMutableString string];
+        for (NSUInteger i = 0; i < n; i++) {
+            unichar c = [s characterAtIndex:i];
+            [expanded appendFormat:@"%C%C", c, c];
+        }
+        s = expanded;
+        n = [s length];
+    }
+    if (n != 6 && n != 8) {
+        return nil;
+    }
+
+    unsigned int value = 0;
+    NSScanner *scanner = [NSScanner scannerWithString:s];
+    if (![scanner scanHexInt:&value]) {
+        return nil;
+    }
+
+    CGFloat r, g, b, a;
+    if (n == 8) {
+        r = ((value >> 24) & 0xFF) / 255.0;
+        g = ((value >> 16) & 0xFF) / 255.0;
+        b = ((value >> 8) & 0xFF) / 255.0;
+        a = (value & 0xFF) / 255.0;
+    } else {
+        r = ((value >> 16) & 0xFF) / 255.0;
+        g = ((value >> 8) & 0xFF) / 255.0;
+        b = (value & 0xFF) / 255.0;
+        a = 1.0;
+    }
+    return [NSColor colorWithSRGBRed:r green:g blue:b alpha:a];
+}
+
+// Read a hex color string stored under `key` in the options object.
+static NSColor* colorOption(PA_ObjectRef options, const wchar_t *key)
+{
+    CUTF8String colorUTF;
+    if (!ob_get_s(options, key, &colorUTF)) {
+        return nil;
+    }
+    NSString *hex = [NSString stringWithUTF8String:(const char *)colorUTF.c_str()];
+    return colorFromHexString(hex);
+}
+
+// Read a collection of hex color strings (the `paletteColors` option) into an NSArray<NSColor *>.
+static NSArray<NSColor *>* paletteColorsOption(PA_ObjectRef options)
+{
+    PA_CollectionRef collection = ob_get_c(options, L"paletteColors");
+    if (collection == NULL) {
+        return nil;
+    }
+    NSMutableArray<NSColor *> *colors = [NSMutableArray array];
+    PA_long32 length = PA_GetCollectionLength(collection);
+    for (PA_long32 i = 0; i < length; i++) {
+        PA_Variable element = PA_GetCollectionElement(collection, i);
+        if (PA_GetVariableKind(element) == eVK_Unistring) {
+            PA_Unistring *u = &element.uValue.fString;
+            CUTF16String s16 = CUTF16String(u->fString, u->fLength);
+            CUTF8String s8;
+            convertToUTF8(&s16, &s8);
+            NSString *hex = [NSString stringWithUTF8String:(const char *)s8.c_str()];
+            NSColor *color = colorFromHexString(hex);
+            if (color != nil) {
+                [colors addObject:color];
+            }
+        }
+        PA_ClearVariable(&element);
+    }
+    return ([colors count] > 0) ? colors : nil;
+}
+
+// Returns the appearance used for adaptive tinting of plain / monochrome symbols.
+// When the caller passes a 4D window reference in the "window" option (e.g.
+// `Current form window`), its own appearance is used, so the symbol matches that
+// specific window's Light / Dark mode; otherwise the application appearance is used.
+API_AVAILABLE(macos(10.14))
+static NSAppearance* appearanceForOptions(PA_ObjectRef options)
+{
+    if (ob_is_defined(options, L"window")) {
+        sLONG_PTR windowRefValue = (sLONG_PTR)ob_get_n(options, L"window");
+        if (windowRefValue != 0) {
+            sLONG_PTR windowPtr = PA_GetWindowPtr(reinterpret_cast<PA_WindowRef>(windowRefValue));
+            NSWindow *window = reinterpret_cast<NSWindow *>(windowPtr);
+            if (window != nil) {
+                return [window effectiveAppearance];
+            }
+        }
+    }
+    return [NSApp effectiveAppearance];
+}
+#endif
+
 void SFSymbolPicture( PA_PluginParameters params )
 {
     /*1*/PA_Unistring* name;
@@ -68,14 +177,28 @@ void SFSymbolPicture( PA_PluginParameters params )
     //@autoreleasepool {
     NSString *systemSymbolName = [NSString stringWithUTF8String:(const char *)systemSymbolName8.c_str()];
 
-    NSImage* image = [NSImage imageWithSystemSymbolName: systemSymbolName accessibilityDescription: nil];
+    // "variableValue" (macOS 13+): fill level (0.0 - 1.0) for symbols that support
+    // variable rendering, e.g. "wifi", "speaker.wave.3", "chart.bar".
+    NSImage* image = nil;
+    if (ob_is_defined(options, L"variableValue")) {
+        if (@available(macOS 13.0, *)) {
+            double variableValue = ob_get_n(options, L"variableValue");
+            image = [NSImage imageWithSystemSymbolName: systemSymbolName
+                                         variableValue: variableValue
+                               accessibilityDescription: nil];
+        }
+    }
+    if (image == nil) {
+        image = [NSImage imageWithSystemSymbolName: systemSymbolName accessibilityDescription: nil];
+    }
+
+    // --- Size / weight / scale configuration (macOS 11+ / Big Sur).
+    NSImageSymbolConfiguration* conf = nullptr;
 
     if(ob_is_defined(options, L"pointSize") \
        || ob_is_defined(options, L"weight") \
        || ob_is_defined(options, L"scale") \
        || ob_is_defined(options, L"style")) {
-
-        NSImageSymbolConfiguration* conf = nullptr;
 
         if (ob_is_defined(options, L"pointSize")  && ob_is_defined(options, L"weight") && ob_is_defined(options, L"scale")) {
             CGFloat pointSize = ob_get_n(options, L"pointSize");
@@ -106,14 +229,112 @@ void SFSymbolPicture( PA_PluginParameters params )
                 conf = [NSImageSymbolConfiguration configurationWithScale: scale];
             }
         }
-        if (conf != nullptr) {
-            image = [image imageWithSymbolConfiguration: conf];
+    }
+
+    // A system symbol image is tiny by default (about 13x16 pt), so scaling it up to
+    // a larger "width"/"height" would look blurry. When no explicit point size was
+    // requested, render the symbol at a point size matching the requested output so
+    // it stays crisp.
+    if (conf == nullptr) {
+        CGFloat requested = 0;
+        if (ob_is_defined(options, L"height")) {
+            requested = ob_get_n(options, L"height");
+        } else if (ob_is_defined(options, L"width")) {
+            requested = ob_get_n(options, L"width");
+        }
+        if (requested > 0) {
+            conf = [NSImageSymbolConfiguration configurationWithPointSize: requested weight: NSFontWeightRegular];
         }
     }
 
-    // NSData *data = [image TIFFRepresentation];
+    // --- Color / rendering-mode configuration.
+    // These are the options added to SF Symbols after Big Sur; they are guarded
+    // by @available so the plugin keeps working on macOS 11 (they are ignored there).
+    NSImageSymbolConfiguration* colorConf = nullptr;
+    // A template image is always drawn in a single flat color (black). Hierarchical,
+    // palette and multicolor produce real colors, so the image must be marked
+    // non-template, otherwise CGImageForProposedRect below would flatten it to black.
+    bool coloredRendering = false;
 
-    NSGraphicsContext *context = [NSGraphicsContext currentContext];
+    if (@available(macOS 12.0, *)) {
+        if (ob_is_defined(options, L"hierarchicalColor")) {
+            // Hierarchical: one color, the symbol layers get automatic opacity levels.
+            NSColor *color = colorOption(options, L"hierarchicalColor");
+            if (color != nil) {
+                colorConf = [NSImageSymbolConfiguration configurationWithHierarchicalColor: color];
+                coloredRendering = true;
+            }
+        } else if (ob_is_defined(options, L"paletteColors")) {
+            // Palette: one color per layer (pass a collection of hex strings).
+            NSArray<NSColor *> *colors = paletteColorsOption(options);
+            if (colors != nil) {
+                colorConf = [NSImageSymbolConfiguration configurationWithPaletteColors: colors];
+                coloredRendering = true;
+            }
+        } else if (ob_is_defined(options, L"multicolor") && ob_get_b(options, L"multicolor")) {
+            // Multicolor: use the symbol's own predefined colors.
+            colorConf = [NSImageSymbolConfiguration configurationPreferringMulticolor];
+            coloredRendering = true;
+        }
+    }
+    if (colorConf == nullptr) {
+        if (@available(macOS 13.0, *)) {
+            if (ob_is_defined(options, L"monochrome") && ob_get_b(options, L"monochrome")) {
+                // Monochrome: render every layer in a single (template) color.
+                colorConf = [NSImageSymbolConfiguration configurationPreferringMonochrome];
+            }
+        }
+    }
+
+    // Merge the size and color configurations (configurationByApplyingConfiguration: is macOS 12+).
+    if (colorConf != nullptr) {
+        if (conf != nullptr) {
+            if (@available(macOS 12.0, *)) {
+                conf = [conf configurationByApplyingConfiguration: colorConf];
+            } else {
+                conf = colorConf;
+            }
+        } else {
+            conf = colorConf;
+        }
+    }
+
+    if (conf != nullptr) {
+        image = [image imageWithSymbolConfiguration: conf];
+    }
+
+    if (coloredRendering) {
+        // A colored (non-template) image must not be flattened to a single tint.
+        [image setTemplate: NO];
+    }
+
+    // Tint for plain / monochrome (template) symbols. The colored modes above already
+    // carry their own colors and are left untouched.
+    //   - "color" (hex string): an explicit tint chosen by the caller.
+    //   - otherwise: follow the app's current appearance at render time, so the symbol
+    //     is black in Light mode and white in Dark mode (it stays visible either way).
+    // Note: the result is a baked bitmap, so it reflects the appearance when the picture
+    // is generated; regenerate the picture to follow a later Light/Dark switch.
+    NSColor *tint = nil;
+    if (!coloredRendering) {
+        NSColor *explicitColor = colorOption(options, L"color");
+        if (explicitColor != nil) {
+            tint = explicitColor;
+        } else {
+            BOOL isDark = NO;
+            if (@available(macOS 10.14, *)) {
+                // Match the passed "window" appearance when given, else the app's.
+                NSAppearance *appearance = appearanceForOptions(options);
+                if (appearance != nil) {
+                    NSAppearanceName best = [appearance bestMatchFromAppearancesWithNames:
+                                             @[NSAppearanceNameAqua, NSAppearanceNameDarkAqua]];
+                    isDark = [best isEqualToString: NSAppearanceNameDarkAqua];
+                }
+            }
+            tint = isDark ? [NSColor whiteColor] : [NSColor blackColor];
+        }
+    }
+
     CGFloat width = 32;
     CGFloat height = image.size.height * 32 / image.size.width;
     if(ob_is_defined(options, L"width")) {
@@ -122,12 +343,42 @@ void SFSymbolPicture( PA_PluginParameters params )
     if(ob_is_defined(options, L"height")) {
         height = ob_get_n(options, L"height");
     }
-    CGRect imageCGRect = CGRectMake(0, 0, width, height);
-    NSRect imageRect = NSRectFromCGRect(imageCGRect);
-    CGImageRef imageRef = [image CGImageForProposedRect:&imageRect context:context hints: nil];
 
-    NSBitmapImageRep *newRep = [[NSBitmapImageRep alloc] initWithCGImage:imageRef];
-    [newRep setSize: imageCGRect.size];
+    // Draw the symbol into an RGBA bitmap. Drawing (rather than
+    // -CGImageForProposedRect:) is what makes the symbol's own colors show up for
+    // multicolor rendering; it also renders hierarchical, palette, variable-value
+    // and plain (template, black) symbols correctly.
+    NSInteger pixelsWide = (NSInteger)width;
+    NSInteger pixelsHigh = (NSInteger)height;
+    NSBitmapImageRep *newRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes: NULL
+                                                                      pixelsWide: pixelsWide
+                                                                      pixelsHigh: pixelsHigh
+                                                                   bitsPerSample: 8
+                                                                 samplesPerPixel: 4
+                                                                        hasAlpha: YES
+                                                                        isPlanar: NO
+                                                                  colorSpaceName: NSDeviceRGBColorSpace
+                                                                     bytesPerRow: 0
+                                                                    bitsPerPixel: 0];
+    [newRep setSize: NSMakeSize(width, height)];
+
+    NSGraphicsContext *bitmapContext = [NSGraphicsContext graphicsContextWithBitmapImageRep: newRep];
+    [NSGraphicsContext saveGraphicsState];
+    [NSGraphicsContext setCurrentContext: bitmapContext];
+    [image drawInRect: NSMakeRect(0, 0, width, height)
+             fromRect: NSZeroRect
+            operation: NSCompositingOperationSourceOver
+             fraction: 1.0
+       respectFlipped: YES
+                hints: nil];
+    if (tint != nil) {
+        // Recolor the drawn (template) symbol to the tint, keeping its shape and
+        // anti-aliased alpha (SourceAtop only paints where the symbol already is).
+        [tint set];
+        NSRectFillUsingOperation(NSMakeRect(0, 0, width, height), NSCompositingOperationSourceAtop);
+    }
+    [NSGraphicsContext restoreGraphicsState];
+
     NSData *data = [newRep representationUsingType: NSBitmapImageFileTypePNG properties: @{}];
 
     [newRep autorelease];
