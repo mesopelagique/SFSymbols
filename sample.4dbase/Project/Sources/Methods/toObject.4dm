@@ -1,4 +1,4 @@
 //%attributes = {}
 #DECLARE($obj : Object)
 
-$obj.result:=New object:C1471("name"; $obj.value; "picture"; SFSymbolPicture($obj.value))
+$obj.result:={name: $obj.value; picture: SFSymbolPicture($obj.value; {window: Current form window:C827})}

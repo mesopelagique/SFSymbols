@@ -19,7 +19,7 @@ $picture:=SFSymbolPicture("lasso.sparkles")
 You could also set size
 
 ```4d
-$picture:=SFSymbolPicture("lasso.sparkles"; New object("width"; 64; "height"; 64))
+$picture:=SFSymbolPicture("lasso.sparkles"; {width: 64; height: 64})
 ```
 
 ## Options
@@ -55,30 +55,30 @@ Colors are passed as CSS-like hex strings: `"#RGB"`, `"#RGBA"`, `"#RRGGBB"` or `
 
 ```4d
 // Hierarchical color (macOS 12+)
-$picture:=SFSymbolPicture("square.stack.3d.up.fill"; New object("hierarchicalColor"; "#0A84FF"))
+$picture:=SFSymbolPicture("square.stack.3d.up.fill"; {hierarchicalColor: "#0A84FF"})
 
 // Palette colors, one per layer (macOS 12+)
-$picture:=SFSymbolPicture("person.crop.circle.badge.plus"; New object("paletteColors"; New collection("#FF375F"; "#30D158")))
+$picture:=SFSymbolPicture("person.crop.circle.badge.plus"; {paletteColors: ["#FF375F"; "#30D158"]})
 
 // Multicolor, the symbol's own colors (macOS 12+)
 // Only symbols that ship a multicolor variant show colors (e.g. cloud.sun.rain.fill,
 // thermometer.sun.fill, paintpalette.fill); others fall back to a single color.
-$picture:=SFSymbolPicture("cloud.sun.rain.fill"; New object("multicolor"; True))
+$picture:=SFSymbolPicture("cloud.sun.rain.fill"; {multicolor: True})
 
 // Monochrome (macOS 13+)
-$picture:=SFSymbolPicture("heart.fill"; New object("monochrome"; True))
+$picture:=SFSymbolPicture("heart.fill"; {monochrome: True})
 
 // Variable value 0.0 - 1.0 (macOS 13+)
-$picture:=SFSymbolPicture("wifi"; New object("variableValue"; 0.4))
+$picture:=SFSymbolPicture("wifi"; {variableValue: 0.4})
 
 // Explicit tint color for a plain symbol
-$picture:=SFSymbolPicture("gear"; New object("color"; "#FF9500"))
+$picture:=SFSymbolPicture("gear"; {color: "#FF9500"})
 ```
 
 Options can be combined, for example a hierarchical blue symbol at a larger scale:
 
 ```4d
-$picture:=SFSymbolPicture("square.stack.3d.up.fill"; New object("width"; 64; "height"; 64; "scale"; 3; "hierarchicalColor"; "#0A84FF"))
+$picture:=SFSymbolPicture("square.stack.3d.up.fill"; {width: 64; height: 64; scale: 3; hierarchicalColor: "#0A84FF"})
 ```
 
 ### Dark mode
@@ -99,7 +99,7 @@ For a plain or `monochrome` symbol:
 
 ```4d
 // Match the current form window's Light / Dark appearance
-$picture:=SFSymbolPicture("gear"; New object("window"; Current form window))
+$picture:=SFSymbolPicture("gear"; {window: Current form window})
 ```
 
 The colored modes (`hierarchicalColor`, `paletteColors`, `multicolor`) carry their own
