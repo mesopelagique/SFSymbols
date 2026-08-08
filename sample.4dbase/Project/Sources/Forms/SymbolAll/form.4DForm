@@ -44,6 +44,8 @@
 					"height": 405,
 					"events": [
 						"onClick",
+						"onDoubleClick",
+						"onAlternateClick",
 						"onHeaderClick",
 						"onDataChange",
 						"onSelectionChange"
@@ -65,7 +67,11 @@
 							"width": 308,
 							"dataSource": "This:C1470.name",
 							"textAlign": "center",
-							"verticalAlign": "middle"
+							"verticalAlign": "middle",
+							"events": [
+								"onDoubleClick",
+								"onAlternateClick"
+							]
 						},
 						{
 							"header": {
@@ -77,9 +83,13 @@
 								"name": "Footer2"
 							},
 							"dataSourceTypeHint": "picture",
-							"dataSource": "This:C1470.picture",
+							"dataSource": "symbolPicture(This:C1470)",
 							"rowHeightAuto": false,
-							"pictureFormat": "truncatedCenter"
+							"pictureFormat": "truncatedCenter",
+							"events": [
+								"onDoubleClick",
+								"onAlternateClick"
+							]
 						}
 					]
 				}
