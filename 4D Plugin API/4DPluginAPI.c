@@ -553,7 +553,7 @@ void PA_DisposeCollection(PA_CollectionRef collection)
 
 PA_ObjectRef PA_DuplicateObject( PA_ObjectRef object )
 {
-	PA_Variable	params[1], result;
+	PA_Variable	params[1] = {0}, result;
 	
 	if( object == NULL )
 		return NULL;
@@ -670,7 +670,7 @@ void PA_SetObjectProperty( PA_ObjectRef object, PA_Unistring* key, PA_Variable v
 void PA_RemoveObjectProperty( PA_ObjectRef object, PA_Unistring* key )
 {
 	PA_Variable params[2] = {0};
-
+	
 	PA_SetObjectVariable( &params[0], object );
 	PA_SetStringVariable( &params[1], key );
 	
@@ -681,7 +681,7 @@ void PA_RemoveObjectProperty( PA_ObjectRef object, PA_Unistring* key )
 char PA_HasObjectProperty( PA_ObjectRef object, PA_Unistring* key )
 {
 	PA_Variable params[2] = {0}, result;
-
+	
 	PA_SetObjectVariable( &params[0], object );
 	PA_SetStringVariable( &params[1], key );
 	
@@ -712,7 +712,7 @@ PA_VariableKind  PA_GetObjectPropertyType( PA_ObjectRef object, PA_Unistring* ke
 PA_Variable PA_JsonParse( PA_Unistring* json, PA_VariableKind kind )
 {
 	PA_Variable params[2] = {0}, result;
-
+	
 	if( kind == eVK_ArrayObject )
 	{
 		PA_SetStringVariable( &params[0], json );
